@@ -6,13 +6,16 @@ $installDir  = Join-Path $toolsDir 'app'
 
 $tag = 'v0.8.1'
 
-if ($IsWindows) {
+$isWindows = ($env:OS -eq 'Windows_NT')
+$isLinux   = (-not $isWindows) -and (Test-Path '/')
+
+if ($isWindows) {
   $file     = 'funkin-windows-64bit.zip'
   $url      = "https://github.com/FunkinCrew/Funkin/releases/download/$tag/$file"
   $checksum = 'e10a76587f086b804b255add5076bf0102e8ee037d656346a7bb63df9db94cef'
   $expectedExeRelative = 'Funkin.exe'
 }
-elseif ($IsLinux) {
+elseif ($isLinux) {
   $file     = 'funkin-linux-64bit.zip'
   $url      = "https://github.com/FunkinCrew/Funkin/releases/download/$tag/$file"
   $checksum = 'e36d8276e37f2fe1fe32a07686b90ee2346e1a6c4cbd4b98a714f92bc374de89'
@@ -41,8 +44,8 @@ if (-not (Test-Path $exePath)) {
   throw "Expected executable not found: $exePath. The upstream zip layout may have changed."
 }
 
-if ($IsLinux) {
+if ($isLinux) {
   & chmod +x $exePath | Out-Null
 }
 
-Install-BinFile -Name 'funkin' -Path $exePath
+Install-BinFile -Name 'funkin' -Path $exePat
